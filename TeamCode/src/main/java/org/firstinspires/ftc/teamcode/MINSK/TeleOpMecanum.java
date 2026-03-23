@@ -25,7 +25,7 @@ public class TeleOpMecanum extends LinearOpMode {
     private DcMotor leftFront;
     private DcMotor rightBack;
     private VoltageSensor batteryVoltageSensor;
-    public static double LongLAUNCH = 1340;
+    public static double LongLAUNCH = 1400;
     public static double ShortsLAUNCH = 1200;
     public static double Left = 0.7;
     public static double Right = 1;
@@ -82,6 +82,7 @@ public class TeleOpMecanum extends LinearOpMode {
             } else {
                 intake.setPower(0);
             }
+      
 
 
             if (gamepad2.y && !yState && !ShortLaunch) {

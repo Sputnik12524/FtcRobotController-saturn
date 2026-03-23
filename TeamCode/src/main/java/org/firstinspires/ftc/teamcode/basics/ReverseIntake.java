@@ -93,7 +93,7 @@ public class ReverseIntake extends LinearOpMode {
                 intake.setPower(0);
             }
 
-            if (gamepad2.dpad_right) {
+            if (gamepad2.dpad_up) {
                 intake.setPower(-1);
             } else {
                 intake.setPower(0);

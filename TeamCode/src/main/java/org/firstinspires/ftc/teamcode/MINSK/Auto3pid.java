@@ -29,7 +29,7 @@ public class Auto3pid extends LinearOpMode {
 
     private VoltageSensor batteryVoltageSensor;
 
-    public static double LongLAUNCH =  -1125;
+    public static double LongLAUNCH =  -1110;
 
 
 

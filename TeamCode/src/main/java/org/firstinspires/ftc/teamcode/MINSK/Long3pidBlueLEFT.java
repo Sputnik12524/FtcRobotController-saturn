@@ -35,7 +35,7 @@ public class Long3pidBlueLEFT extends LinearOpMode {
     private IMU imu;
     private VoltageSensor batteryVoltageSensor;
 
-    public static double LongLAUNCH =  -1340;
+    public static double LongLAUNCH =  -1400;
 
 
 

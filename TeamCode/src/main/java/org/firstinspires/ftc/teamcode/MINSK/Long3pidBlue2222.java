@@ -1,21 +1,27 @@
-package org.firstinspires.ftc.teamcode.basics;
+package org.firstinspires.ftc.teamcode.MINSK;
 
 
 
 
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
+import org.firstinspires.ftc.teamcode.shooter.TuningController;
 
-@Autonomous(name = " Auto 3 Artifacts pid", group = "Robot")
+
+@Autonomous(name = "long 3 PID Blue 22 ", group = "Robot")
 @Config
-public class Auto3pidFEFT extends LinearOpMode {
+public class Long3pidBlue2222 extends LinearOpMode {
     public static PIDFCoefficients MOTOR_PID = new PIDFCoefficients(10, 0, 9, 17);
 
     private DcMotor leftFront;
@@ -26,10 +32,10 @@ public class Auto3pidFEFT extends LinearOpMode {
     private CRServo leftServo;
     private CRServo rightServo;
     private DcMotor inteke;
-
+    private IMU imu;
     private VoltageSensor batteryVoltageSensor;
 
-    public static double LongLAUNCH =  -1125;
+    public static double LongLAUNCH =  -1300;
 
 
 
@@ -37,7 +43,7 @@ public class Auto3pidFEFT extends LinearOpMode {
     static final double PULSES = 537.7;
     static final double WHEEL_DIAMETR = 9.6;
     static final double PULSES_PER_CM = PULSES / (Math.PI * WHEEL_DIAMETR);
-    static final double SPEED = 0.55;
+    static final double SPEED = 0.2;
 
 
 
@@ -57,7 +63,18 @@ public class Auto3pidFEFT extends LinearOpMode {
         rightServo = hardwareMap.get(CRServo.class, "rightServo");
         inteke = hardwareMap.get(DcMotor.class, "intake");
 
+        RevHubOrientationOnRobot.UsbFacingDirection usbDirection = RevHubOrientationOnRobot.UsbFacingDirection.UP;
+        RevHubOrientationOnRobot.LogoFacingDirection logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.BACKWARD;
+        RevHubOrientationOnRobot orientationOnRobot = new RevHubOrientationOnRobot(logoDirection, usbDirection);
 
+        imu = hardwareMap.get(IMU.class, "imu");
+        imu.initialize(new IMU.Parameters(orientationOnRobot));
+
+        leftBack.setDirection(DcMotor.Direction.REVERSE);
+        leftFront.setDirection(DcMotor.Direction.REVERSE);
+        rightBack.setDirection(DcMotor.Direction.FORWARD);
+        rightFront.setDirection(DcMotor.Direction.FORWARD);
+        imu.resetYaw();
 
 
 
@@ -99,51 +116,86 @@ public class Auto3pidFEFT extends LinearOpMode {
         setPIDFCoefficients(motorShooter, MOTOR_PID);
 
         waitForStart();
+        imu.resetYaw();
+        telemetry.addData("velocity", motorShooter);
 
+        telemetry.addData("upperBound", TuningController.rpmToTicksPerSecond(TuningController.TESTING_MAX_SPEED * 1.15));
+        telemetry.addData("lowerBound", 0);
+        telemetry.update();
 
-        driveBack(SPEED,25);
+        motorShooter.setVelocity(-1395);
+        sleep(6000);
 
+        driveForward(SPEED,13);
 
-
-        motorShooter.setVelocity(LongLAUNCH);
-        sleep(8000);
-
-
-
+        //против часовой
+       turnLeft(0.2, 11);
 
         //первый шар
-        leftServo.setPower(-1);
-        sleep(7000);
-
-
+        rightServo.setPower(-1);
+        sleep(4000);
+        motorShooter.setVelocity(LongLAUNCH);
+        sleep(5500);
         //второй шар
         leftServo.setPower(-1);
         sleep(5000);
 
 
+
         //захват
-        sleep(1500);
+
         inteke.setPower(1);
-        sleep(4500);
+        sleep(4000);
         inteke.setPower(0);
 
 
         //третий шар
+        sleep(2000);
         leftServo.setPower(-1);
-        sleep(3000);
-
 
         //стоп
         rightServo.setPower(0);
         leftServo.setPower(0);
-        sleep(4000);
         motorShooter.setVelocity(0);
+
+        driveForward(1,20);
 
         telemetry.addLine("hi from fta");
     }
 
 
-    public void  driveBack(double power, double distance) {
+    public void  driveForward(double power, double distance) {
+
+
+        leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+
+        leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+
+        leftFront.setPower(power);
+        rightFront.setPower(power);
+        leftBack.setPower(power);
+        rightBack.setPower(power);
+
+
+        while (opModeIsActive() && leftBack.getCurrentPosition() < distance * PULSES_PER_CM) ;
+
+
+        leftFront.setPower(0);
+        rightFront.setPower(0);
+        leftBack.setPower(0);
+        rightBack.setPower(0);
+
+
+    }
+    public void  turnLeft (double power,double distance) {
 
 
         leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -159,12 +211,12 @@ public class Auto3pidFEFT extends LinearOpMode {
 
 
         leftFront.setPower(-power);
-        rightFront.setPower(-power);
+        rightFront.setPower(power);
         leftBack.setPower(-power);
-        rightBack.setPower(-power);
+        rightBack.setPower(power);
 
 
-        while (opModeIsActive() && leftBack.getCurrentPosition() > -distance * PULSES_PER_CM) ;
+        while (opModeIsActive() && leftBack.getCurrentPosition() >  -distance  * PULSES_PER_CM) ;
 
 
         leftFront.setPower(0);
@@ -179,5 +231,9 @@ public class Auto3pidFEFT extends LinearOpMode {
                 coefficients.p, coefficients.i, coefficients.d, coefficients.f * 12 / batteryVoltageSensor.getVoltage()
         ));
 
+    }
+    public double getHeading() {
+        YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
+        return orientation.getYaw(AngleUnit.DEGREES);
     }
 }

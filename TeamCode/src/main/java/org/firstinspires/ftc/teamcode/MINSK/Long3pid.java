@@ -35,7 +35,7 @@ public class Long3pid extends LinearOpMode {
     private IMU imu;
     private VoltageSensor batteryVoltageSensor;
 
-    public static double LongLAUNCH =  -1350;
+    public static double LongLAUNCH =  -1330;
 
 
 
@@ -126,7 +126,7 @@ public class Long3pid extends LinearOpMode {
         motorShooter.setVelocity(LongLAUNCH);
         sleep(6000);
 
-        driveForward(SPEED,10);
+        driveForward(SPEED,14);
 
         //по часовой
        turnRight(0.2, 15.5);
@@ -135,12 +135,12 @@ public class Long3pid extends LinearOpMode {
         leftServo.setPower(-1);
         sleep(6000);
 
-
+        motorShooter.setVelocity(-1340);
         //второй шар
         rightServo.setPower(-1);
         sleep(6000);
 
-
+        motorShooter.setVelocity(-1320);
         //захват
 
         inteke.setPower(1);
