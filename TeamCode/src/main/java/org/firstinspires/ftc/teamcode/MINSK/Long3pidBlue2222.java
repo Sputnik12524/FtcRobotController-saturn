@@ -123,7 +123,7 @@ public class Long3pidBlue2222 extends LinearOpMode {
         telemetry.addData("lowerBound", 0);
         telemetry.update();
 
-        motorShooter.setVelocity(-1395);
+        motorShooter.setVelocity(-1385);
         sleep(6000);
 
         driveForward(SPEED,13);
@@ -141,7 +141,7 @@ public class Long3pidBlue2222 extends LinearOpMode {
         sleep(5000);
 
 
-
+        motorShooter.setVelocity(-1325);
         //захват
 
         inteke.setPower(1);
@@ -158,7 +158,8 @@ public class Long3pidBlue2222 extends LinearOpMode {
         leftServo.setPower(0);
         motorShooter.setVelocity(0);
 
-        driveForward(1,20);
+        turnRight(0.2, 11);
+        driveForward(0.5,18);
 
         telemetry.addLine("hi from fta");
     }
@@ -217,6 +218,37 @@ public class Long3pidBlue2222 extends LinearOpMode {
 
 
         while (opModeIsActive() && leftBack.getCurrentPosition() >  -distance  * PULSES_PER_CM) ;
+
+
+        leftFront.setPower(0);
+        rightFront.setPower(0);
+        leftBack.setPower(0);
+        rightBack.setPower(0);
+
+
+    }
+    public void  turnRight (double power,double distance) {
+
+
+        leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+
+        leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+
+        leftFront.setPower(power);
+        rightFront.setPower(-power);
+        leftBack.setPower(power);
+        rightBack.setPower(-power);
+
+
+        while (opModeIsActive() && leftBack.getCurrentPosition() < distance  * PULSES_PER_CM) ;
 
 
         leftFront.setPower(0);
